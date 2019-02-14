@@ -1,0 +1,87 @@
+ select * from StudentDetails;
+
+    ROLLNO STUDNAME          AGE DOB
+---------- ---------- ---------- ---------
+       101 shobhit            21
+       102 adi                20
+       103 ratani_s           24
+
+SQL> select * from MarksDetails;
+
+    ROLLNO       SUB1       SUB2
+---------- ---------- ----------
+       101         66         77
+       102         99         33
+       103         55         77
+
+SQL> declare
+  2  s_rollno StudentDetails.rollno%type;
+  3  s_name StudentDetails.studname%type;
+  4  s_age StudentDetails.age%type;
+  5  begin
+  6  select studname,age into s_name,s_age from StudentDetails
+  7  where rollno=s_rollno;
+  8  dbms_output.put_line('student name is: '|| s_name);
+  9  dbms_output.put_line('student age is: '|| s_age);
+ 10  exception
+ 11  when no_data_found then
+ 12  dbms_output.put_line('No such Student present');
+ 13  end;
+ 14  /
+
+No such Student present
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  declare
+  2  s_rollno StudentDetails.rollno%type := 101;
+  3  s_name StudentDetails.studname%type;
+  4  s_age StudentDetails.age%type;
+  5  begin
+  6  select studname,age into s_name,s_age from StudentDetails
+  7  where rollno=s_rollno;
+  8  dbms_output.put_line('student name is: '|| s_name);
+  9  dbms_output.put_line('student age is: '|| s_age);
+ 10  exception
+ 11  when no_data_found then
+ 12  dbms_output.put_line('No such Student present');
+ 13* end;
+SQL> /
+
+student name is: shobhit
+student age is: 21
+
+PL/SQL procedure successfully completed.
+
+
+  1  declare
+  2  s_rollno StudentDetails.rollno%type := &s_rollno;
+  3  s_name StudentDetails.studname%type;
+  4  s_age StudentDetails.age%type;
+  5  -- user defined exceptions
+  6  invalid_rollno_exception;
+  7  begin
+  8  if s_rollno < = 0 then
+  9  raise invalid_rollno_exception;
+ 10  else
+ 11  select studname,age into s_name,s_age from StudentDetails
+ 12  where rollno = s_rollno;
+ 13  dbms_output.put_line('student name is: '|| s_name);
+ 14  dbms_output.put_line('student age is: '|| s_age);
+ 15  end if;
+ 16  exception
+ 17  when invalid_rollno_exception then
+ 18  dbms_output.put_line('Invalid roll number');
+ 19  when no_data_found then
+ 20  dbms_output.put_line('No such Student present');
+ 21  when others then
+ 22  dbms_output.put_line('Error !!');
+ 23* end;
+SQL> /
+Enter value for s_rollno: -5
+old   2: s_rollno StudentDetails.rollno%type := &s_rollno;
+new   2: s_rollno StudentDetails.rollno%type := -5;
+invalid_rollno_exception;
